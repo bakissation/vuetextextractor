@@ -89,14 +89,7 @@ This script is provided under the MIT License. Feel free to modify and use it as
 7.  **Disclaimer**
 
 This script is intended for extracting text content from Vue.js templates and does not include advanced localization or translation management features. If you require more comprehensive translation and localization tools, consider using dedicated libraries and services.
-<<<<<<< HEAD
 
-Support and Feedback
-=======
->>>>>>> 7d3b5e2a01f153eaac4d34c8fdf2ac2c20ca1a43
-
-  
-
-8.  **Contributions:**
+1.  **Contributions:**
 
 If you encounter issues or have feedback, please feel free to create an issue in the repository. I welcome contributions and improvements to this script.

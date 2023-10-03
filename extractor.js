@@ -1,68 +1,94 @@
-const fs = require('fs');
+const fs = require('fs').promises; // Use fs.promises for asynchronous file operations
 const path = require('path');
 const { parseComponent } = require('vue-template-compiler');
 
 // Function to extract text from a Vue file
-function extractTextFromFile(filePath) {
-  const fileContent = fs.readFileSync(filePath, 'utf8');  //Change encoding here
-  const { template } = parseComponent(fileContent);
+async function extractTextFromFile(filePath) {
+  try {
+    // Read the file content asynchronously
+    const fileContent = await fs.readFile(filePath, 'utf8');
+    const { template } = parseComponent(fileContent);
 
-  const extractedText = [];
+    const extractedText = [];
 
-  if (template && template.content) {
-    const textMatches = template.content.match(/(?<=>)([^<]*)(?=<)/g); //Change regular expression here
+    if (template && template.content) {
+      // Use regular expression to match and extract text from the template content
+      const textMatches = template.content.match(/(?<=>)([^<]*)(?=<)/g);
 
-    if (textMatches) {
-      textMatches.forEach((match) => {
-        const text = match.trim();
-        extractedText.push(text);
-      });
+      if (textMatches) {
+        textMatches.forEach((match) => {
+          const text = match.trim();
+          extractedText.push(text);
+        });
+      }
     }
-  }
 
-  return extractedText;
+    return extractedText;
+  } catch (error) {
+    console.error(`Error reading file: ${filePath}\n${error}`);
+    return [];
+  }
 }
 
-
 // Function to recursively find Vue files in a directory
-function findVueFilesInDirectory(directory) {
-  const vueFiles = [];
-  const items = fs.readdirSync(directory);
+async function findVueFilesInDirectory(directory) {
+  try {
+    // Read the directory contents asynchronously
+    const items = await fs.readdir(directory);
+    const vueFiles = [];
 
-  items.forEach((item) => {
-    const itemPath = path.join(directory, item);
+    for (const item of items) {
+      const itemPath = path.join(directory, item);
+      const stat = await fs.stat(itemPath);
 
-    if (fs.statSync(itemPath).isDirectory()) {
-      vueFiles.push(...findVueFilesInDirectory(itemPath));
-    } else if (item.endsWith('.vue')) {
-      vueFiles.push(itemPath);
+      if (stat.isDirectory()) {
+        // Recursively search for Vue files in subdirectories
+        vueFiles.push(...await findVueFilesInDirectory(itemPath));
+      } else if (item.endsWith('.vue')) {
+        // Add Vue files to the list
+        vueFiles.push(itemPath);
+      }
     }
-  });
 
-  return vueFiles;
+    return vueFiles;
+  } catch (error) {
+    console.error(`Error reading directory: ${directory}\n${error}`);
+    return [];
+  }
 }
 
 // Main function to extract text from Vue files in a project directory
-function extractTextFromProject(rootDirectory) {
-  const vueFiles = findVueFilesInDirectory(rootDirectory);
-  const extractedText = [];
+async function extractTextFromProject(rootDirectory) {
+  try {
+    // Find all Vue files in the project directory and its subdirectories
+    const vueFiles = await findVueFilesInDirectory(rootDirectory);
+    const extractedText = [];
 
-  vueFiles.forEach((vueFilePath) => {
-    const text = extractTextFromFile(vueFilePath);
-    extractedText.push(...text);
-  });
+    for (const vueFilePath of vueFiles) {
+      // Extract text from each Vue file and accumulate it
+      const text = await extractTextFromFile(vueFilePath);
+      extractedText.push(...text);
+    }
 
-  return extractedText;
+    return extractedText;
+  } catch (error) {
+    console.error(`Error extracting text from project: ${rootDirectory}\n${error}`);
+    return [];
+  }
 }
 
-// Specify the root directory of your project here
-const rootDirectory = '/path/to/root/here';  // Define your project root path here
-
-// Run the extraction
-const extractedText = extractTextFromProject(rootDirectory);
-
-// Save the extracted text to a JSON file, you can change output format here
+const rootDirectory = '/path/to/root/here'; // Define your vue project root path here
 const outputPath = path.join(__dirname, 'extracted-text.json');
-fs.writeFileSync(outputPath, JSON.stringify(extractedText, null, 2), 'utf8');
 
-console.log(`Text extraction completed. Extracted text saved to ${outputPath}`);
+// Execute the text extraction process
+(async () => {
+  const extractedText = await extractTextFromProject(rootDirectory);
+
+  try {
+    // Write the extracted text to a JSON file
+    await fs.writeFile(outputPath, JSON.stringify(extractedText, null, 2), 'utf8');
+    console.log(`Text extraction completed. Extracted text saved to ${outputPath}`);
+  } catch (error) {
+    console.error(`Error writing to file: ${outputPath}\n${error}`);
+  }
+})();

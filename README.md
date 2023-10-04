@@ -1,95 +1,115 @@
+### Vue Text Extractor
 
-# Vue Text Extractor
+**Version:** 1.0.0
 
-  
+---
 
-Vue Text Extractor is a Node.js script that allows you to extract text content from Vue.js files in your project directory. This can be helpful for various purposes, such as preparing text for translation or reviewing the text used in your user interface.
+### Table of Contents
 
-  
+- [Vue Text Extractor](#vue-text-extractor)
+- [Table of Contents](#table-of-contents)
+- [1. Introduction](#1-introduction)
+- [2. Usage](#2-usage)
+  - [Running the Script](#running-the-script)
+  - [Output](#output)
+- [3. Command-Line Options](#3-command-line-options)
+- [4. Installation](#4-installation)
+- [5.  Customization](#5--customization)
+- [6.  License](#6--license)
+- [7.  Contributions](#7--contributions)
 
-I personally made it because I was too lazy to do a 5 min job manually, it took 2 hours and it's not even perfect...
+---
 
-  
+### 1. Introduction
 
-## Prerequisites
+Vue Text Extractor is a command-line utility for extracting text content from Vue.js files in a project directory. It is designed to help developers extract translatable text and perform other text-related tasks within Vue.js projects.
 
-  
+I personally made it intially because I was too lazy to do a 5 minutes job manually, now I keep expanding on it for now reason at all...
 
-Before using the script, ensure you have the following prerequisites installed on your system:
+---
 
-  
+### 2. Usage
 
-- [Node.js](https://nodejs.org/): JavaScript runtime environment.
+To use Vue Text Extractor, follow these steps:
 
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/): Package managers usually included with Node.js.
+#### Running the Script
 
-  
+1. Open your terminal or command prompt.
 
-## Usage
+2. Navigate to the directory where the `extractor.js` script is located.
 
-  
+3. Run the script with the following command, replacing `[directory]` with the path to your Vue.js project root directory:
 
-1.  **Clone or Download:** Clone or download this repository to your local machine.
+   ```
+   node extractor.js --directory [directory]
+   ```
 
-  
+   For example:
 
-2.  **Navigate to Directory:** Open a terminal and navigate to the directory where the script (`extractor.js`) is located.
-- Install dependencies:
+   ```
+   node extractor.js --directory /path/to/your/vue/project
+   ```
 
-~~~
+#### Output
 
-    npm install
+- The extracted text will be saved to a JSON file named `extracted-text.json` in the same directory as the `extractor.js` script.
+---
 
-~~~
-or
+### 3. Command-Line Options
 
-~~~
+Vue Text Extractor supports the following command-line options:
 
-    yarn install
+- `--directory (-d)`: Specify the project root directory where Vue files should be searched for. This option is required.
 
-~~~
+- `--help`: Display help and usage information.
 
-  
+---
 
-3.  **Configure Root Directory:** Modify the `rootDirectory` variable in `extractor.js` to specify the root directory of your Vue.js project:
+### 4. Installation
 
-  
+To install Vue Text Extractor, follow these steps:
 
-5.  **Run the Script:** Run the Script: Execute the script with the F5 button (I prefer easy executions lol)
+1. Clone the repository:
 
-This will initiate the extraction process, and the extracted text will be saved to a JSON file named extracted-text.json in the same directory as the script.
+   ```
+   git clone https://github.com/bakissation/vuetextextractor.git
+   ```
 
-  
-  
+2. Navigate to the project directory:
 
-5.  **Customization:**
+   ```
+   cd vuetextextractor
+   ```
+
+3. Install dependencies using npm:
+
+   ```
+   npm install
+   ```
+---
+
+### 5.  Customization
 
 You can further customize the script to match the structure of your Vue templates if needed. Specifically, you can modify the regular expression pattern used for text extraction in the extractTextFromFile function to better suit your templates:
 
   
 
 ~~~
-
-const textMatches = template.content.match(/(?<=>)([^<]*)(?=<)/g);
-
+      const textMatches = template.content.match(/(?<=>)([^<]*)(?=<)/g);
 ~~~
 
   
 
 Feel free to adjust the regular expression pattern to accurately capture text content within your Vue templates.
 
-  
+---
 
-6.  **License:**
+### 6.  License
 
 This script is provided under the MIT License. Feel free to modify and use it as needed in your projects.
 
-  
+---
 
-7.  **Disclaimer**
-
-This script is intended for extracting text content from Vue.js templates and does not include advanced localization or translation management features. If you require more comprehensive translation and localization tools, consider using dedicated libraries and services.
-
-1.  **Contributions:**
+### 7.  Contributions
 
 If you encounter issues or have feedback, please feel free to create an issue in the repository. I welcome contributions and improvements to this script.
